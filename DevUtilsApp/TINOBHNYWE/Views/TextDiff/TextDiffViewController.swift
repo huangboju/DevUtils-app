@@ -23,7 +23,7 @@ class TextDiffViewController: ToolViewController, NSTextViewDelegate {
   @IBOutlet weak var diffNextButton: NSButton!
   @IBOutlet weak var diffCountLabel: NSTextField!
   
-  let dmp = DiffMatchPatch()
+//  let dmp = DiffMatchPatch()
   
   var diffRanges: [NSRange] = []
   var currentDiffRangesIndex = -1
@@ -101,34 +101,34 @@ class TextDiffViewController: ToolViewController, NSTextViewDelegate {
     refresh()
   }
   
-  func getDiff(_ input1: String, _ input2: String) -> NSMutableArray {
-    if getDiffMode() == .characters {
-      let diff = dmp.diff_main(ofOldString: input1, andNewString: input2)
-      dmp.diff_cleanupSemantic(diff)
-      return diff!
-    }
-    
-    if getDiffMode() == .words {
-      let d3 = dmp.diff_wordsToChars(forFirstString: input1, andSecondString: input2)
-      let diff = dmp.diff_main(ofOldString: (d3![0] as! String), andNewString: (d3![1] as! String))
-      dmp.diff_chars((diff as! [Any]), toLines: (d3![2] as! [Any]))
-      return diff!
-    }
-    
-    if getDiffMode() == .lines {
-      let d3 = dmp.diff_linesToChars(forFirstString: input1, andSecondString: input2)
-      let diff = dmp.diff_main(ofOldString: (d3![0] as! String), andNewString: (d3![1] as! String))
-      dmp.diff_chars((diff as! [Any]), toLines: (d3![2] as! [Any]))
-      return diff!
-    }
-    
-    log.error("invalid diff mode state")
-    return []
-  }
+//  func getDiff(_ input1: String, _ input2: String) -> NSMutableArray {
+//    if getDiffMode() == .characters {
+//      let diff = dmp.diff_main(ofOldString: input1, andNewString: input2)
+//      dmp.diff_cleanupSemantic(diff)
+//      return diff!
+//    }
+//
+//    if getDiffMode() == .words {
+//      let d3 = dmp.diff_wordsToChars(forFirstString: input1, andSecondString: input2)
+//      let diff = dmp.diff_main(ofOldString: (d3![0] as! String), andNewString: (d3![1] as! String))
+//      dmp.diff_chars((diff as! [Any]), toLines: (d3![2] as! [Any]))
+//      return diff!
+//    }
+//
+//    if getDiffMode() == .lines {
+//      let d3 = dmp.diff_linesToChars(forFirstString: input1, andSecondString: input2)
+//      let diff = dmp.diff_main(ofOldString: (d3![0] as! String), andNewString: (d3![1] as! String))
+//      dmp.diff_chars((diff as! [Any]), toLines: (d3![2] as! [Any]))
+//      return diff!
+//    }
+//
+//    log.error("invalid diff mode state")
+//    return []
+//  }
   
   func refresh() {
     
-    let d = getDiff(input1TextView.string, input2TextView.string)
+//    let d = getDiff(input1TextView.string, input2TextView.string)
 
     let s = NSMutableAttributedString()
     
@@ -137,39 +137,39 @@ class TextDiffViewController: ToolViewController, NSTextViewDelegate {
     
     var offset = 0
     
-    if getOutputMode() == .formattedText {
-      d.forEach({ (diff) in
-        let item = diff as! Diff
-        
-        // TODO: this will not work well for strings with multi bytes characters
-        // like emojis.
-        let length = item.text.lengthOfBytes(using: .utf8)
-        
-        if item.operation == DIFF_DELETE {
-          s.append(deletedAttrStr(content: item.text))
-          diffRanges.append(.init(location: offset, length: length))
-        } else if item.operation == DIFF_INSERT {
-          s.append(addedAttrStr(content: item.text))
-          diffRanges.append(.init(location: offset, length: length))
-        } else if item.operation == DIFF_EQUAL {
-          s.append(equalAttrStr(content: item.text))
-        } else {
-          log.error("diff-match-patch returned unexpected data")
-        }
-        
-        offset += length
-      })
-    }
+//    if getOutputMode() == .formattedText {
+//      d.forEach({ (diff) in
+//        let item = diff as! Diff
+//        
+//        // TODO: this will not work well for strings with multi bytes characters
+//        // like emojis.
+//        let length = item.text.lengthOfBytes(using: .utf8)
+//        
+//        if item.operation == DIFF_DELETE {
+//          s.append(deletedAttrStr(content: item.text))
+//          diffRanges.append(.init(location: offset, length: length))
+//        } else if item.operation == DIFF_INSERT {
+//          s.append(addedAttrStr(content: item.text))
+//          diffRanges.append(.init(location: offset, length: length))
+//        } else if item.operation == DIFF_EQUAL {
+//          s.append(equalAttrStr(content: item.text))
+//        } else {
+//          log.error("diff-match-patch returned unexpected data")
+//        }
+//        
+//        offset += length
+//      })
+//    }
     
     updateNextPrevButtonState()
     // log.debug("diff ranges: \(diffRanges)")
     
     if getOutputMode() == .HTML {
-      s.append(equalAttrStr(content: dmp.diff_prettyHtml(d)))
+//      s.append(equalAttrStr(content: dmp.diff_prettyHtml(d)))
     }
     
     if getOutputMode() == .diff {
-      s.append(equalAttrStr(content: dmp.patch_(toText: dmp.patch_make(fromDiffs: d))))
+//      s.append(equalAttrStr(content: dmp.patch_(toText: dmp.patch_make(fromDiffs: d))))
     }
     
     diffTextView.textStorage?.setAttributedString(s)
